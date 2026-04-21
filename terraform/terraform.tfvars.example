@@ -5,7 +5,7 @@ proxmox_insecure  = true
 proxmox_node      = "pve"
 
 # VM template
-template_vm_id = 9000  # Debian 12 cloud-init template ID
+template_vm_id = 9000  # Debian 13 cloud-init template ID
 
 # VM configuration
 vm_name      = "rms-monitoring"

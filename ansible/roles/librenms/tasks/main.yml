@@ -25,7 +25,7 @@
 - name: Add Docker APT repository
   copy:
     content: |
-      deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian bookworm stable
+      deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian trixie stable
     dest: /etc/apt/sources.list.d/docker.list
     mode: "0644"
 

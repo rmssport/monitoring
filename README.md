@@ -7,7 +7,7 @@ Monitors ~50 network devices (UniFi APs, switches, D-Link switches, NVRs, PCs) v
 ## Architecture
 
 ```
-Windows PC (Terraform) ──► Proxmox (10.0.0.99) ──► Debian 12 VM
+Windows PC (Terraform) ──► Proxmox (10.0.0.99) ──► Debian 13 VM
                                                          │
                                                     Ansible (local)
                                                          │
@@ -28,7 +28,7 @@ Windows PC (Terraform) ──► Proxmox (10.0.0.99) ──► Debian 12 VM
 
 ## Prerequisites
 
-1. **Proxmox:** Create a Debian 12 cloud-init template ([instructions](docs/proxmox-template-setup.md))
+1. **Proxmox:** Create a Debian 13 cloud-init template ([instructions](docs/proxmox-template-setup.md))
 2. **Proxmox:** Create an API token for Terraform ([instructions](docs/proxmox-template-setup.md#api-token))
 3. **Windows PC:** Install [Terraform CLI](https://developer.hashicorp.com/terraform/install)
 4. **Windows PC:** Generate an SSH key pair (`ssh-keygen -t ed25519`)

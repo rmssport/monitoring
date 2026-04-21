@@ -1,21 +1,23 @@
-# Proxmox Setup: Debian 12 Cloud-Init Template
+# Proxmox Setup: Debian 13 Cloud-Init Template
 
 One-time setup on the Proxmox host (10.0.0.99). This creates a VM template that Terraform clones to create the monitoring VM.
+
+**Important:** You need the **cloud image** (genericcloud qcow2), NOT the netinst ISO. The cloud image is a pre-installed disk image that cloud-init configures at first boot. The netinst ISO is an interactive installer and won't work with Terraform.
 
 ## Create the Template
 
 SSH into the Proxmox host and run:
 
 ```bash
-# Download Debian 12 cloud image
+# Download Debian 13 cloud image (NOT the netinst ISO)
 cd /var/lib/vz/template/iso
-wget https://cloud.debian.org/images/cloud/bookworm/latest/debian-12-genericcloud-amd64.qcow2
+wget https://cloud.debian.org/images/cloud/trixie/latest/debian-13-genericcloud-amd64.qcow2
 
 # Create a new VM (use ID 9000 or any free ID)
-qm create 9000 --name "debian-12-cloud" --memory 2048 --cores 2 --net0 virtio,bridge=vmbr0
+qm create 9000 --name "debian-13-cloud" --memory 2048 --cores 2 --net0 virtio,bridge=vmbr0
 
 # Import the cloud image as the VM's disk
-qm importdisk 9000 debian-12-genericcloud-amd64.qcow2 local-lvm
+qm importdisk 9000 debian-13-genericcloud-amd64.qcow2 local-lvm
 
 # Attach the imported disk
 qm set 9000 --scsihw virtio-scsi-single --scsi0 local-lvm:vm-9000-disk-0
@@ -40,7 +42,7 @@ Note the template VM ID (9000 in this example) — you'll need it for `terraform
 
 ## Verify
 
-In the Proxmox web UI, you should see "debian-12-cloud" listed as a template under your node.
+In the Proxmox web UI, you should see "debian-13-cloud" listed as a template under your node.
 
 ## API Token
 
