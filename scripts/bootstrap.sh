@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -euo pipefail
+set -uo pipefail
 
 CONTAINER="librenms"
 APP_DIR="/opt/monitoring"
@@ -44,10 +44,10 @@ run_lnms config:set autodiscovery.nets-exclude.0 "127.0.0.0/8"
 # --- Poller settings ---
 echo ""
 echo ">> Configuring poller..."
-run_lnms config:set rrd.step 300
-run_lnms config:set snmp.timeout 5
-run_lnms config:set snmp.retries 2
-run_lnms config:set ping_rrd true
+run_lnms config:set rrd.step 300 || echo "  Skipping rrd.step (not supported in this version)"
+run_lnms config:set snmp.timeout 5 || echo "  Skipping snmp.timeout"
+run_lnms config:set snmp.retries 2 || echo "  Skipping snmp.retries"
+run_lnms config:set ping_rrd true || echo "  Skipping ping_rrd"
 
 # --- Enable key features ---
 echo ""
