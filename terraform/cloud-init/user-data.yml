@@ -25,7 +25,7 @@ packages:
   - ca-certificates
 
 runcmd:
-  - systemctl enable --now qemu-guest-agent
-  - git clone -b ${repo_branch} ${repo_url} /opt/monitoring
-  - chown -R ${user}:${user} /opt/monitoring
-  - echo "Cloud-init complete. Run: cd /opt/monitoring && ansible-playbook ansible/playbook.yml" > /etc/motd
+  - ["systemctl", "enable", "--now", "qemu-guest-agent"]
+  - ["git", "clone", "-b", "${repo_branch}", "${repo_url}", "/opt/monitoring"]
+  - ["chown", "-R", "${user}:${user}", "/opt/monitoring"]
+  - ["/bin/bash", "-c", "echo 'Cloud-init complete. Run: cd /opt/monitoring && ansible-playbook ansible/playbook.yml' > /etc/motd"]
