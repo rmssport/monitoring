@@ -7,7 +7,13 @@
       "PowerShell(git mv *)",
       "WebFetch(domain:registry.terraform.io)",
       "WebFetch(domain:github.com)",
-      "PowerShell(git add *)"
+      "PowerShell(git add *)",
+      "WebFetch(domain:cloud.debian.org)",
+      "PowerShell(Test-Connection *)",
+      "PowerShell(refreshenv *)",
+      "PowerShell(Get-Command *)",
+      "PowerShell(terraform *)",
+      "PowerShell(terraform plan *)"
     ]
   }
 }

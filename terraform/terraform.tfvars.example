@@ -1,8 +1,9 @@
 # Proxmox connection
 proxmox_endpoint  = "https://10.0.0.99:8006/"
 proxmox_api_token = "terraform@pve!monitoring=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+proxmox_ssh_password = "your-proxmox-root-password"
 proxmox_insecure  = true
-proxmox_node      = "pve"
+proxmox_node      = "rms-prox01"
 
 # VM template
 template_vm_id = 9000  # Debian 13 cloud-init template ID
@@ -18,7 +19,7 @@ datastore    = "local-lvm"
 # Network
 network_bridge = "vmbr0"
 vlan_id        = null               # Set to VLAN ID if needed
-vm_ip          = "10.0.0.100/24"    # Static IP with CIDR (Proxmox is on 10.0.0.99)
+vm_ip          = "10.0.0.2/24"      # Static IP with CIDR (Proxmox is on 10.0.0.99)
 vm_gateway     = "10.0.0.1"         # Adjust to your gateway — must route to 10.7.5.0/24
 dns_servers    = ["8.8.8.8", "8.8.4.4"]
 

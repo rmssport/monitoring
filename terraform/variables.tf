@@ -9,6 +9,12 @@ variable "proxmox_api_token" {
   sensitive   = true
 }
 
+variable "proxmox_ssh_password" {
+  description = "SSH password for root on the Proxmox host (needed to upload cloud-init snippets)"
+  type        = string
+  sensitive   = true
+}
+
 variable "proxmox_insecure" {
   description = "Skip TLS certificate verification for Proxmox API"
   type        = bool

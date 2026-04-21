@@ -50,7 +50,7 @@ resource "proxmox_virtual_environment_vm" "monitoring" {
   }
 
   initialization {
-    datastore_id = var.snippets_datastore
+    datastore_id = var.datastore
     interface    = "ide2"
 
     ip_config {
