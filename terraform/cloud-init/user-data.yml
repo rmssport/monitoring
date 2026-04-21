@@ -1,0 +1,31 @@
+#cloud-config
+
+hostname: ${hostname}
+manage_etc_hosts: true
+timezone: Europe/Copenhagen
+
+users:
+  - name: ${user}
+    groups: sudo
+    shell: /bin/bash
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    ssh_authorized_keys:
+      - ${ssh_key}
+
+package_update: true
+package_upgrade: true
+
+packages:
+  - git
+  - ansible
+  - python3-pip
+  - qemu-guest-agent
+  - curl
+  - gnupg
+  - ca-certificates
+
+runcmd:
+  - systemctl enable --now qemu-guest-agent
+  - git clone -b ${repo_branch} ${repo_url} /opt/monitoring
+  - chown -R ${user}:${user} /opt/monitoring
+  - echo "Cloud-init complete. Run: cd /opt/monitoring && ansible-playbook ansible/playbook.yml" > /etc/motd

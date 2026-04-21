@@ -58,10 +58,14 @@ packages.mk
 **/*.tfstate
 **/*.tfstate.backup
 **/.terraform.tfstate.lock.info
+terraform.tfvars
+*.auto.tfvars
+
+# Environment files
+.env
 
 # Folders and files
 certificates
-terraform
 configuration.cluster
 configuration.installs
 other
@@ -70,7 +74,7 @@ monitoring.backup
 monitoring/monitoring_*_dir
 **/*.bak_remove
 **/*.wrapped
-data
+/data
 
 # Keys
 **/*.pem

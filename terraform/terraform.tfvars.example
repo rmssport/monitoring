@@ -1,0 +1,31 @@
+# Proxmox connection
+proxmox_endpoint  = "https://10.0.0.99:8006/"
+proxmox_api_token = "terraform@pve!monitoring=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+proxmox_insecure  = true
+proxmox_node      = "pve"
+
+# VM template
+template_vm_id = 9000  # Debian 12 cloud-init template ID
+
+# VM configuration
+vm_name      = "rms-monitoring"
+vm_id        = 0        # 0 = auto-assign
+vm_cores     = 2
+vm_memory    = 4096     # MB
+vm_disk_size = 40       # GB
+datastore    = "local-lvm"
+
+# Network
+network_bridge = "vmbr0"
+vlan_id        = null               # Set to VLAN ID if needed
+vm_ip          = "10.7.5.100/24"    # Static IP with CIDR
+vm_gateway     = "10.7.5.1"
+dns_servers    = ["8.8.8.8", "8.8.4.4"]
+
+# Access
+ssh_public_key = "ssh-ed25519 AAAA... your-key-comment"
+vm_user        = "rms"
+
+# Repository
+monitoring_repo_url    = "https://github.com/rmssport/monitoring.git"
+monitoring_repo_branch = "main"

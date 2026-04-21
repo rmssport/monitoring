@@ -1,0 +1,92 @@
+version: '3'
+
+networks:
+  public: {}
+  private: {}
+
+volumes:
+  grafana_lib: {}
+  grafana_ds: 
+
+services:
+  influxdb:
+    image: influxdb:alpine
+    container_name: influxdb
+    restart: unless-stopped
+    ports:
+      - "8086:8086"
+    networks:
+      - public
+      - private
+    volumes:
+      - ./data/influxdb:/var/lib/influxdb2/
+    environment:
+      INFLUXDB_REPORTING_DISABLED: "true"
+      INFLUXDB_DB: telegraf
+      INFLUXDB_USER: telegraf
+      INFLUXDB_USER_PASSWORD: thispassworddoesntreallymatter
+
+  grafana:
+      image: grafana/grafana:5.1.3
+      container_name: grafana
+      ports:
+        - "3001:3000"
+      networks:
+        - public
+        - private
+      restart: unless-stopped        
+      volumes:
+        - ./grafana/:/var/lib/grafana/ds/
+      environment:
+        GF_AUTH_ANONYMOUS_ENABLED: "true"
+        GF_SECURITY_ADMIN_PASSWORD: "admin"
+        GF_SECURITY_ADMIN_USER: "admin"
+        GF_SERVER_PROTOCOL: "http"
+        GF_SERVER_DOMAIN: ""
+        GF_SERVER_METRICS_ENABLED: "true"
+        GF_SERVER_METRICS_INTERVAL_SECONDS: "10"
+        INFLUXDB_URI: "http://influxdb:8086"
+        INFLUXDB_DB: telegraf
+        INFLUXDB_USER: telegraf
+        INFLUXDB_USER_PASSWORD: thispassworddoesntreallymatter
+        
+  telegraf:
+    image: rms-telegraf:latest
+    container_name: telegraf
+    restart: unless-stopped
+    networks:
+      - public
+      - private
+    ports:
+      - "9273:9273"
+    volumes:
+      - ./telegraf/telegraf.conf:/etc/telegraf/telegraf.conf:ro
+
+  prometheus:
+    image: quay.io/prometheus/prometheus:v2.0.0
+    container_name: prometheus
+    restart: unless-stopped
+    volumes:
+     - ./prometheus/alerts/alert-ping.yml:/etc/prometheus/alerts/alert-ping.yml
+     - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+     - private
+    command: 
+      - "--config.file=/etc/prometheus/prometheus.yml" 
+      - "--storage.tsdb.path=/prometheus"
+    ports:
+     - 9091:9090
+
+  alertmanager:
+    image: prom/alertmanager
+    container_name: alertmanager
+    restart: unless-stopped
+    ports:
+      - 9093:9093
+    volumes:
+      - ./alertmanager/:/etc/alertmanager/
+    networks:
+      - private
+    command:
+      - '--config.file=/etc/alertmanager/config.yml'
+      - '--storage.path=/alertmanager'

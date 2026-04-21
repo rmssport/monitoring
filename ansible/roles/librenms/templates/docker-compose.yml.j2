@@ -1,3 +1,6 @@
+# Managed by Ansible — do not edit manually
+# Source: ansible/roles/librenms/templates/docker-compose.yml.j2
+
 services:
   mariadb:
     image: mariadb:11
@@ -8,7 +11,7 @@ services:
       MYSQL_DATABASE: ${MYSQL_DATABASE:-librenms}
       MYSQL_USER: ${MYSQL_USER:-librenms}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-      TZ: ${TZ:-Europe/Copenhagen}
+      TZ: ${TZ:-{{ timezone }}}
     command:
       - mysqld
       - --innodb-file-per-table=1
@@ -25,7 +28,7 @@ services:
     container_name: librenms-redis
     restart: unless-stopped
     environment:
-      TZ: ${TZ:-Europe/Copenhagen}
+      TZ: ${TZ:-{{ timezone }}}
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
@@ -39,7 +42,7 @@ services:
     container_name: librenms-rrdcached
     restart: unless-stopped
     environment:
-      TZ: ${TZ:-Europe/Copenhagen}
+      TZ: ${TZ:-{{ timezone }}}
       LOG_LEVEL: LOG_INFO
       WRITE_TIMEOUT: 1800
       WRITE_JITTER: 1800
@@ -62,7 +65,7 @@ services:
     ports:
       - "${LIBRENMS_PORT:-8000}:8000"
     environment:
-      TZ: ${TZ:-Europe/Copenhagen}
+      TZ: ${TZ:-{{ timezone }}}
       PUID: 1000
       PGID: 1000
       DB_HOST: mariadb
@@ -75,9 +78,9 @@ services:
       RRDCACHED_SERVER: rrdcached:42217
       CACHE_DRIVER: redis
       SESSION_DRIVER: redis
-      SNMP_COMMUNITY: ${SNMP_COMMUNITY:-public}
-      LIBRENMS_SNMP_COMMUNITY: ${SNMP_COMMUNITY:-public}
-      LIBRENMS_BASE_URL: ${LIBRENMS_BASE_URL:-http://localhost:8000}
+      SNMP_COMMUNITY: ${SNMP_COMMUNITY:-{{ snmp_community }}}
+      LIBRENMS_SNMP_COMMUNITY: ${SNMP_COMMUNITY:-{{ snmp_community }}}
+      LIBRENMS_BASE_URL: ${LIBRENMS_BASE_URL:-{{ librenms_base_url }}}
       LIBRENMS_WEATHERMAP: "false"
       MEMORY_LIMIT: 256M
       UPLOAD_MAX_SIZE: 16M
@@ -93,7 +96,7 @@ services:
     depends_on:
       - librenms
     environment:
-      TZ: ${TZ:-Europe/Copenhagen}
+      TZ: ${TZ:-{{ timezone }}}
       PUID: 1000
       PGID: 1000
       DB_HOST: mariadb
@@ -106,8 +109,8 @@ services:
       RRDCACHED_SERVER: rrdcached:42217
       CACHE_DRIVER: redis
       SESSION_DRIVER: redis
-      SNMP_COMMUNITY: ${SNMP_COMMUNITY:-public}
-      LIBRENMS_SNMP_COMMUNITY: ${SNMP_COMMUNITY:-public}
+      SNMP_COMMUNITY: ${SNMP_COMMUNITY:-{{ snmp_community }}}
+      LIBRENMS_SNMP_COMMUNITY: ${SNMP_COMMUNITY:-{{ snmp_community }}}
       MEMORY_LIMIT: 256M
       SIDECAR_DISPATCHER: 1
     volumes:
@@ -125,7 +128,7 @@ services:
       - "514:514/udp"
       - "514:514/tcp"
     environment:
-      TZ: ${TZ:-Europe/Copenhagen}
+      TZ: ${TZ:-{{ timezone }}}
       PUID: 1000
       PGID: 1000
       DB_HOST: mariadb
@@ -154,7 +157,7 @@ services:
     ports:
       - "162:162/udp"
     environment:
-      TZ: ${TZ:-Europe/Copenhagen}
+      TZ: ${TZ:-{{ timezone }}}
       PUID: 1000
       PGID: 1000
       DB_HOST: mariadb

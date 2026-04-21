@@ -1,0 +1,134 @@
+---
+- name: Install prerequisite packages
+  apt:
+    name:
+      - ca-certificates
+      - curl
+      - gnupg
+      - ufw
+    state: present
+    update_cache: true
+
+- name: Create Docker APT keyring directory
+  file:
+    path: /etc/apt/keyrings
+    state: directory
+    mode: "0755"
+
+- name: Add Docker GPG key
+  shell: |
+    curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+    chmod a+r /etc/apt/keyrings/docker.gpg
+  args:
+    creates: /etc/apt/keyrings/docker.gpg
+
+- name: Add Docker APT repository
+  copy:
+    content: |
+      deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian bookworm stable
+    dest: /etc/apt/sources.list.d/docker.list
+    mode: "0644"
+
+- name: Install Docker CE
+  apt:
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+      - docker-compose-plugin
+    state: present
+    update_cache: true
+
+- name: Enable and start Docker
+  systemd:
+    name: docker
+    enabled: true
+    state: started
+
+- name: Add deploy user to docker group
+  user:
+    name: rms
+    groups: docker
+    append: true
+
+- name: Create application directory
+  file:
+    path: "{{ app_dir }}"
+    state: directory
+    owner: rms
+    group: rms
+    mode: "0755"
+
+- name: Template docker-compose.yml
+  template:
+    src: docker-compose.yml.j2
+    dest: "{{ app_dir }}/docker-compose.yml"
+    owner: rms
+    group: rms
+    mode: "0644"
+
+- name: Template .env file
+  template:
+    src: env.j2
+    dest: "{{ app_dir }}/.env"
+    owner: rms
+    group: rms
+    mode: "0600"
+
+- name: Start LibreNMS stack
+  shell: docker compose up -d
+  args:
+    chdir: "{{ app_dir }}"
+
+- name: Wait for LibreNMS to be healthy
+  uri:
+    url: "http://localhost:8000"
+    status_code: [200, 302]
+  register: result
+  until: result.status in [200, 302]
+  retries: 30
+  delay: 10
+
+- name: Configure UFW defaults
+  ufw:
+    direction: incoming
+    default: deny
+
+- name: Allow SSH
+  ufw:
+    rule: allow
+    port: "22"
+    proto: tcp
+
+- name: Allow HTTP (LibreNMS)
+  ufw:
+    rule: allow
+    port: "8000"
+    proto: tcp
+
+- name: Allow SNMP traps
+  ufw:
+    rule: allow
+    port: "162"
+    proto: udp
+
+- name: Allow syslog UDP
+  ufw:
+    rule: allow
+    port: "514"
+    proto: udp
+
+- name: Allow syslog TCP
+  ufw:
+    rule: allow
+    port: "514"
+    proto: tcp
+
+- name: Enable UFW
+  ufw:
+    state: enabled
+
+- name: Run bootstrap script
+  shell: bash {{ app_dir }}/scripts/bootstrap.sh
+  args:
+    creates: "{{ app_dir }}/.bootstrapped"
