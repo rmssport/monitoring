@@ -34,8 +34,8 @@ run_lnms config:set snmp.community.0 "$COMMUNITY"
 # --- Auto-discovery networks ---
 echo ""
 echo ">> Adding auto-discovery networks..."
-run_lnms config:set nets.0 "10.7.5.0/24"
-run_lnms config:set nets.1 "10.0.0.0/24"
+run_lnms config:set nets.0 "10.0.0.0/24"
+run_lnms config:set nets.1 "10.7.5.0/24"
 
 echo ">> Enabling auto-discovery..."
 run_lnms config:set discovery_by_ip true
