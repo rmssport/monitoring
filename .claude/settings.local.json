@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "PowerShell(git checkout *)",
+      "PowerShell(New-Item *)",
+      "PowerShell(git mv *)",
+      "WebFetch(domain:registry.terraform.io)",
+      "WebFetch(domain:github.com)",
+      "PowerShell(git add *)"
+    ]
+  }
+}
