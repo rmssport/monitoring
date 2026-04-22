@@ -91,8 +91,46 @@ echo "  after devices are discovered and categorized."
 
 # --- Alert rules ---
 echo ""
-echo ">> Configuring default alert rules..."
+echo ">> Creating default alert rules..."
 run_lnms config:set alert.default_mail false
+docker exec "$CONTAINER" php -r '
+require "/opt/librenms/vendor/autoload.php";
+$app = require_once "/opt/librenms/bootstrap/app.php";
+$app->make("Illuminate\Contracts\Console\Kernel")->bootstrap();
+
+use LibreNMS\Alerting\QueryBuilderParser;
+
+$rules = json_decode(file_get_contents("/opt/librenms/resources/definitions/alert_rules.json"), true);
+$defaults = array_filter($rules, fn($r) => !empty($r["default"]));
+$existing = \App\Models\AlertRule::pluck("name")->toArray();
+$added = 0;
+
+$default_extra = ["mute" => false, "count" => -1, "delay" => 300, "invert" => false, "interval" => 300];
+
+foreach ($defaults as $rule) {
+    if (in_array($rule["name"], $existing)) continue;
+    $extra = $default_extra;
+    if (isset($rule["extra"])) $extra = array_replace($extra, json_decode($rule["extra"], true));
+    $qb = QueryBuilderParser::fromJson($rule["builder"]);
+    \App\Models\AlertRule::create([
+        "name" => $rule["name"],
+        "builder" => json_encode($rule["builder"]),
+        "query" => $qb->toSql(),
+        "severity" => "critical",
+        "extra" => json_encode($extra),
+        "disabled" => 0,
+    ]);
+    $added++;
+}
+echo "  Added $added default alert rules\n";
+
+// Disable noisy rules
+$disable = ["Port status up/down"];
+foreach ($disable as $name) {
+    \App\Models\AlertRule::where("name", $name)->update(["disabled" => 1]);
+}
+echo "  Disabled rules: " . implode(", ", $disable) . "\n";
+'
 
 # --- Trigger initial discovery ---
 echo ""
