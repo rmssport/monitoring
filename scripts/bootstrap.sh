@@ -25,6 +25,11 @@ run_lnms() {
   docker exec "$CONTAINER" lnms "$@"
 }
 
+# --- Base URL ---
+echo ""
+echo ">> Setting base URL..."
+run_lnms config:set base_url "${LIBRENMS_BASE_URL:-http://localhost:8000}/"
+
 # --- SNMP community ---
 echo ""
 echo ">> Configuring SNMP community..."
