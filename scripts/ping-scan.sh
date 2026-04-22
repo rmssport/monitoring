@@ -11,7 +11,7 @@ for net in "${NETWORKS[@]}"; do
   echo "Ping scanning ${net}..."
   docker exec "$CONTAINER" bash -c "
     fping -g -a ${net} 2>/dev/null | while read -r ip; do
-      lnms device:add \"\$ip\" --ping 2>/dev/null && echo \"  Added \$ip (ping-only)\" || true
+      lnms device:add \"\$ip\" --ping-only 2>/dev/null && echo \"  Added \$ip (ping-only)\" || true
     done
   "
 done
