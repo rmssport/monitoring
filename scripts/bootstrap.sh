@@ -91,8 +91,9 @@ echo "  after devices are discovered and categorized."
 
 # --- Alert rules ---
 echo ""
-echo ">> Configuring default alert rules..."
+echo ">> Configuring alert settings..."
 run_lnms config:set alert.default_mail false
+echo "  Alert rules are managed by the Ansible playbook (seed-alert-rules.php)"
 
 # --- Trigger initial discovery ---
 echo ""
