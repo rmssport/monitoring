@@ -103,9 +103,4 @@ ansible/             VM configuration (Docker, LibreNMS, firewall)
 docker-compose.yml   LibreNMS stack (standalone reference)
 scripts/             Post-deploy bootstrap (lnms CLI)
 docs/                Setup guides
-archive/             Old Prometheus/Telegraf/Grafana stack
 ```
-
-## Old Stack
-
-The previous monitoring setup (Prometheus + Telegraf + Grafana + InfluxDB + AlertManager) is preserved in `archive/` for reference.
