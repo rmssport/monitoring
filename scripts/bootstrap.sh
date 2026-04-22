@@ -103,6 +103,12 @@ docker exec -d "$CONTAINER" su - librenms -s /bin/bash -c \
   'cd /opt/librenms && python3 snmp-scan.py -n 10.7.5.0/24 > /tmp/snmp-scan-10.7.log 2>&1'
 echo "  Scans started. Check logs: docker exec librenms cat /tmp/snmp-scan-10.0.log"
 
+# --- Ping-only discovery ---
+echo ""
+echo ">> Running ping scan to add non-SNMP devices (runs in background)..."
+bash "${APP_DIR}/scripts/ping-scan.sh" >> /var/log/ping-scan.log 2>&1 &
+echo "  Ping scan started. Check log: cat /var/log/ping-scan.log"
+
 # --- Mark bootstrap complete ---
 touch "$MARKER"
 
@@ -113,6 +119,6 @@ echo "Next steps:"
 echo "  1. Open LibreNMS: ${LIBRENMS_BASE_URL:-http://localhost:8000}"
 echo "  2. Create admin user in web UI on first visit"
 echo "  3. Devices on 10.7.5.0/24 and 10.0.0.0/24 are being scanned now"
-echo "  4. Add any ping-only devices manually via web UI"
+echo "  4. Ping-only devices are being added automatically"
 echo "  5. Configure Slack alerts under Alerts -> Alert Transports"
 echo ""
