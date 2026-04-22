@@ -63,7 +63,7 @@ This installs Docker, deploys the LibreNMS stack, configures the firewall, and r
 
 Open `http://<vm-ip>:8000` in your browser. On first visit, create the admin user.
 
-Devices on `10.7.5.0/24` and `10.0.0.0/24` will auto-discover via SNMP within 5 minutes. Add ping-only devices (PCs, NVRs without SNMP) manually via the web UI.
+Devices on `10.7.5.0/24` and `10.0.0.0/24` are scanned via SNMP on first boot and re-scanned daily at 02:00 by a cron job (`/etc/cron.d/snmp-scan`). Check scan results in `/var/log/snmp-scan.log`. Add ping-only devices (PCs, NVRs without SNMP) manually via the web UI.
 
 ## What gets monitored automatically
 
