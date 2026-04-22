@@ -129,6 +129,14 @@
   ufw:
     state: enabled
 
+- name: Install daily SNMP scan cron job
+  template:
+    src: snmp-scan-cron.j2
+    dest: /etc/cron.d/snmp-scan
+    owner: root
+    group: root
+    mode: "0644"
+
 - name: Run bootstrap script
   shell: bash {{ app_dir }}/scripts/bootstrap.sh
   args:
