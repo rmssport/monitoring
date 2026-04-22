@@ -39,12 +39,17 @@ run_lnms config:set nets.1 "10.7.5.0/24"
 
 echo ">> Enabling auto-discovery..."
 run_lnms config:set discovery_by_ip true
+run_lnms config:set autodiscovery.xdp true
+run_lnms config:set autodiscovery.ospf true
 run_lnms config:set autodiscovery.nets-exclude.0 "127.0.0.0/8"
+
+# Allow SNMPv1 and v2c — some older devices only speak v1
+run_lnms config:set snmp.version.0 "v2c"
+run_lnms config:set snmp.version.1 "v1"
 
 # --- Poller settings ---
 echo ""
 echo ">> Configuring poller..."
-run_lnms config:set rrd.step 300 || echo "  Skipping rrd.step (not supported in this version)"
 run_lnms config:set snmp.timeout 5 || echo "  Skipping snmp.timeout"
 run_lnms config:set snmp.retries 2 || echo "  Skipping snmp.retries"
 run_lnms config:set ping_rrd true || echo "  Skipping ping_rrd"
@@ -84,6 +89,15 @@ echo ""
 echo ">> Configuring default alert rules..."
 run_lnms config:set alert.default_mail false
 
+# --- Trigger initial discovery ---
+echo ""
+echo ">> Triggering initial SNMP network scan (runs in background)..."
+docker exec -d "$CONTAINER" su - librenms -s /bin/bash -c \
+  'cd /opt/librenms && python3 snmp-scan.py -n 10.0.0.0/24 > /tmp/snmp-scan-10.0.log 2>&1'
+docker exec -d "$CONTAINER" su - librenms -s /bin/bash -c \
+  'cd /opt/librenms && python3 snmp-scan.py -n 10.7.5.0/24 > /tmp/snmp-scan-10.7.log 2>&1'
+echo "  Scans started. Check logs: docker exec librenms cat /tmp/snmp-scan-10.0.log"
+
 # --- Mark bootstrap complete ---
 touch "$MARKER"
 
@@ -93,7 +107,7 @@ echo ""
 echo "Next steps:"
 echo "  1. Open LibreNMS: ${LIBRENMS_BASE_URL:-http://localhost:8000}"
 echo "  2. Create admin user in web UI on first visit"
-echo "  3. Devices on 10.7.5.0/24 and 10.0.0.0/24 will auto-discover"
+echo "  3. Devices on 10.7.5.0/24 and 10.0.0.0/24 are being scanned now"
 echo "  4. Add any ping-only devices manually via web UI"
 echo "  5. Configure Slack alerts under Alerts -> Alert Transports"
 echo ""
