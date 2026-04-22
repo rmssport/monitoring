@@ -133,3 +133,10 @@
   shell: bash {{ app_dir }}/scripts/bootstrap.sh
   args:
     creates: "{{ app_dir }}/.bootstrapped"
+
+- name: Fix repo ownership after root operations
+  file:
+    path: "{{ app_dir }}"
+    owner: rms
+    group: rms
+    recurse: true
