@@ -9,6 +9,8 @@
     librenms_base_url: "{{ lookup('env', 'LIBRENMS_BASE_URL') | default('http://10.0.0.2:8000', true) }}"
     snmp_community: "{{ lookup('env', 'SNMP_COMMUNITY') | default('public', true) }}"
     timezone: Europe/Copenhagen
+    alert_rules_disable:
+      - "Port status up/down"
 
   roles:
     - librenms

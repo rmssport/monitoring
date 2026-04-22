@@ -137,6 +137,26 @@
     group: root
     mode: "0644"
 
+- name: Template alert rules seed script
+  template:
+    src: seed-alert-rules.php.j2
+    dest: "{{ app_dir }}/scripts/seed-alert-rules.php"
+    owner: rms
+    group: rms
+    mode: "0644"
+
+- name: Copy alert rules script into container
+  shell: docker cp {{ app_dir }}/scripts/seed-alert-rules.php librenms:/tmp/seed-alert-rules.php
+
+- name: Seed default alert rules
+  shell: docker exec librenms php /tmp/seed-alert-rules.php
+  register: alert_rules_result
+  changed_when: "'\"added\":0' not in alert_rules_result.stdout"
+
+- name: Show alert rules result
+  debug:
+    var: alert_rules_result.stdout
+
 - name: Run bootstrap script
   shell: bash {{ app_dir }}/scripts/bootstrap.sh
   args:
