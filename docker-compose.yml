@@ -83,6 +83,7 @@ services:
       UPLOAD_MAX_SIZE: 16M
     volumes:
       - librenms_data:/data
+      - librenms_rrd:/data/rrd
     networks:
       - librenms
 
@@ -112,6 +113,7 @@ services:
       SIDECAR_DISPATCHER: 1
     volumes:
       - librenms_data:/data
+      - librenms_rrd:/data/rrd
     networks:
       - librenms
 
