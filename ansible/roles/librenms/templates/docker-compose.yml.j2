@@ -87,6 +87,8 @@ services:
     volumes:
       - librenms_data:/data
       - librenms_rrd:/data/rrd
+      - {{ app_dir }}/librenms/os_detection/abus-cam.yaml:/opt/librenms/resources/definitions/os_detection/abus-cam.yaml:ro
+      - {{ app_dir }}/librenms/os_discovery/abus-cam.yaml:/opt/librenms/resources/definitions/os_discovery/abus-cam.yaml:ro
     networks:
       - librenms
 
@@ -117,6 +119,8 @@ services:
     volumes:
       - librenms_data:/data
       - librenms_rrd:/data/rrd
+      - {{ app_dir }}/librenms/os_detection/abus-cam.yaml:/opt/librenms/resources/definitions/os_detection/abus-cam.yaml:ro
+      - {{ app_dir }}/librenms/os_discovery/abus-cam.yaml:/opt/librenms/resources/definitions/os_discovery/abus-cam.yaml:ro
     networks:
       - librenms
 
