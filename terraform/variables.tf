@@ -53,7 +53,7 @@ variable "vm_cores" {
 variable "vm_memory" {
   description = "RAM in MB"
   type        = number
-  default     = 4096
+  default     = 6144
 }
 
 variable "vm_disk_size" {
