@@ -6,7 +6,7 @@
     app_dir: /opt/monitoring
     mysql_root_password: "{{ lookup('env', 'MYSQL_ROOT_PASSWORD') | default('changeme-root-password', true) }}"
     mysql_password: "{{ lookup('env', 'MYSQL_PASSWORD') | default('changeme-librenms-password', true) }}"
-    librenms_base_url: "{{ lookup('env', 'LIBRENMS_BASE_URL') | default('http://localhost:8000', true) }}"
+    librenms_base_url: "{{ lookup('env', 'LIBRENMS_BASE_URL') | default('http://10.0.0.2:8000', true) }}"
     snmp_community: "{{ lookup('env', 'SNMP_COMMUNITY') | default('public', true) }}"
     timezone: Europe/Copenhagen
 
