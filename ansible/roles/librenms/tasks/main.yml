@@ -6,6 +6,7 @@
       - curl
       - gnupg
       - ufw
+      - snmp
     state: present
     update_cache: true
 

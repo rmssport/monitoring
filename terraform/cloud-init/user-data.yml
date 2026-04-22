@@ -23,6 +23,7 @@ packages:
   - curl
   - gnupg
   - ca-certificates
+  - snmp
 
 runcmd:
   - ["systemctl", "enable", "--now", "qemu-guest-agent"]
