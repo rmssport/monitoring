@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# Syncs device and client names from UniFi controller to /etc/hosts.
+# Syncs device and client names from UniFi controller to /etc/hosts
+# and updates LibreNMS display names via the database.
 # Runs on the host VM, reads API key from /opt/monitoring/.env.
 set -uo pipefail
 
@@ -85,3 +86,11 @@ cp "$tmpfile" "$HOSTS_FILE"
 rm -f "$tmpfile"
 
 echo "Updated /etc/hosts with ${count} UniFi entries"
+
+echo "Updating LibreNMS display names..."
+json_mapping=$(echo "$entries" | awk '{printf "%s\"%s\":\"%s\"", (NR>1?",":""), $1, $2}')
+json_mapping="{${json_mapping}}"
+
+docker cp "${APP_DIR}/scripts/update-display-names.php" librenms:/tmp/update-display-names.php
+result=$(echo "$json_mapping" | docker exec -i librenms php /tmp/update-display-names.php)
+echo "LibreNMS: ${result}"
