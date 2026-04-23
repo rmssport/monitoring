@@ -1,5 +1,6 @@
 # Daily network scan for LibreNMS auto-discovery
 # Managed by Ansible — do not edit manually
+45 1 * * * root bash /opt/monitoring/scripts/sync-unifi-names.sh >> /var/log/unifi-sync.log 2>&1
 0 2 * * * root docker exec librenms su - librenms -s /bin/bash -c 'cd /opt/librenms && python3 snmp-scan.py -n 10.0.0.0/24' >> /var/log/snmp-scan.log 2>&1
 5 2 * * * root docker exec librenms su - librenms -s /bin/bash -c 'cd /opt/librenms && python3 snmp-scan.py -n 10.7.5.0/24' >> /var/log/snmp-scan.log 2>&1
 15 2 * * * root bash /opt/monitoring/scripts/ping-scan.sh >> /var/log/ping-scan.log 2>&1
