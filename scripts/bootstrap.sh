@@ -65,6 +65,9 @@ echo ">> Enabling features..."
 run_lnms config:set enable_syslog true
 run_lnms config:set enable_inventory true
 
+echo ">> Configuring display names..."
+run_lnms config:set device_display_default '{{ $sysName_fallback }}'
+
 # --- Device groups ---
 echo ""
 echo ">> Creating device groups..."
