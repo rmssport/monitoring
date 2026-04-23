@@ -1,7 +1,7 @@
 #cloud-config
 
 hostname: ${hostname}
-manage_etc_hosts: true
+manage_etc_hosts: false
 timezone: Europe/Copenhagen
 
 users:
